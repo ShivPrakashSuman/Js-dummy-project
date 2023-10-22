@@ -72,7 +72,6 @@
     var id = search_params.get('id');
 
 	function getBlog(id){
-
 		$.ajax({
 			type:'GET',
 			url: 'dataRow.php?id='+id,

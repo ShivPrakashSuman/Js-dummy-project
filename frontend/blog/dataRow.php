@@ -9,8 +9,7 @@
 
             $response['data'] = $result->fetch_assoc();
             $response['message'] = 'Data Fetch Success';
-            $response['status'] = true; 
-
+            $response['status'] = true;
         }
     echo json_encode($response);
 ?>

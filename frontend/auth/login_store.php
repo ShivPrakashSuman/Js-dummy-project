@@ -40,7 +40,6 @@
                     $response['data']['session']= true;
                     echo json_encode($response); 
                     die;
-
             } else {
                 $response['message'] = "Login Failed";
             }

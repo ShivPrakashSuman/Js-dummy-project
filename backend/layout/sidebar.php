@@ -44,7 +44,7 @@
     </head>
     <body>
         <?php
-            $baseURL = 'http://localhost/ajax_js/JS_blog';
+            $baseURL = 'http://localhost/Javascript_Work/Js-dummy-project';
         ?>
         <div class="mane ">
             <div class=" text-center">
@@ -150,5 +150,5 @@
                 </a>
             </div>
         </div> 
-    </body>        
+    </body>     
 </html>

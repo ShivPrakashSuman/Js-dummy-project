@@ -2,7 +2,7 @@
     session_start();
     
     if (isset($_SESSION['userData1'] )) {
-      echo 'Yes Session';die;
+        echo 'Yes Session';
         session_unset();
         session_destroy();
 

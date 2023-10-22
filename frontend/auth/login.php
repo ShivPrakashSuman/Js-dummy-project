@@ -91,8 +91,7 @@
             <img src="../../image/pic.jpg" alt="" width="auto" height="640px">
         </div>            
     </div>
-<script>
-        
+<script>    
     function sessionApi(){
         $.ajax({
             type:'GET',

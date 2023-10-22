@@ -29,6 +29,12 @@
     	border-radius: 100%;
 		color:#00adff;
 	}
+	a{
+		text-decoration: none;
+	}
+	a:hover {
+		text-decoration: none;
+	}
 </style>
 </head>
 <body>
@@ -37,7 +43,7 @@
 			<div class="row  ">
 				<div class="col-sm-6">
 					<div class="navbar-brand ml-5" style="font-size:38px; ">
-						<span class=" text-info ">SECUREM4 </span>
+						<a href="./index.php"><b><span class=" text-info">SECUREM4 </span></b></a>
 					</div>
 				</div>
 				<div class="col-sm-6">
@@ -46,9 +52,9 @@
 							<li class="nav-item "><a href="index.php" class="text-muted text-decoration-none"> Home </a></li>
 							<li class="nav-item text-muted"> About</li>
 							<li class="nav-item text-muted"> Features</li>
-							<li class="nav-item "><i class="fa icn fa-facebook "></i></li>
-							<li class="nav-item "><i class="fa icn fa-twitter"></i></li>
-							<li class="nav-item "><i class="fa icn fa-instagram"></i></li>
+							<li class="nav-item "><a href="../auth/login.php"><i class="fa icn fa-facebook "></i></a></li>
+							<li class="nav-item "><a href="../auth/register.php"><i class="fa icn fa-twitter"></i></a></li>
+							<li class="nav-item "><a href="../auth/login.php"><i class="fa icn fa-instagram"></i></a></li>
 						</ul> 
 					</div>
 				</div>

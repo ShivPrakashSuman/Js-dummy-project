@@ -168,10 +168,11 @@
         </div>   
     </div>
 <script>
+    
     function authCheck(){ 
 	    let x = localStorage.getItem('auth'); 
 		console.log('auth',x);
-		if(x == 'false'){
+		if(x == null){
 	    	console.log('redirect');
 			window.location.assign('../../frontend/auth/register.php');
 		}

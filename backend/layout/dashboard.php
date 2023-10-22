@@ -252,29 +252,10 @@
     </div> 
  
 <script>
-
-    // function sessionApi(){
-
-    // $.ajax({
-    //     type:'GET',
-    //     url:'../../include/sessionApi.php',
-    //     data:'',
-    //     success:function(data){
-    //         let resp = JSON.parse(data);
-    //         if(resp.status && resp.data.session){ 
-
-    //         } else {
-    //             window.location.assign('../../frontend/auth/register.php');
-    //         }
-    //     }
-    // });
-    // }
-    // sessionApi(); 
-
     function authCheck(){ 
 	    let x = localStorage.getItem('auth'); 
 		console.log('auth',x);
-		if(x == 'false'){
+		if(x == null){
 	    	console.log('redirect');
 			window.location.assign('../../frontend/auth/register.php');
 		}
