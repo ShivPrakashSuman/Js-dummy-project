@@ -1,4 +1,5 @@
 <?php
+$response = array('status'=> false, 'message'=>'oops something went wromg?', 'data'=>null);
     $id = $_GET['id'] ;
      if($id) {
         include('../../include/db.php');
@@ -7,11 +8,11 @@
         $result = $comm->query($sql);
 
         if ($result) {
-            echo "Delete Success";
-            header('location:index.php');
+            $response['message'] = "Delete Success";
+            $response['status'] = true; 
         } else {
-            echo "data not Delete";
+            $response['message'] = "data not Delete";
         }
-        header('location:index.php');
-     }
+    }
+echo json_encode($response);     
 ?>

@@ -1,7 +1,8 @@
-<?php
+<?php   
+    $response = array('status'=>false, 'message'=>'oops something went wrong?', 'data'=>null);
 
     include('../../include/db.php');
-    if(isset($_POST['submit'])) {
+    if(isset($_POST)) {
         $fname  = $_POST['fname'];
         $lname  = $_POST['lname'];
         $email  = $_POST['email'];
@@ -20,28 +21,26 @@
         $sql = "select*from blog_user2 where email ='$email'";
 		$result = $comm->query($sql);
 		if ($result->num_rows > 0) {
-			echo "in Email";
-			header('location:register.php?isEmail=1');die;
+			$response['message'] =  "Email Already Exist";
+			echo json_encode($response); die; 
 		}
 
         $sql = "select*from blog_user2 where password = '$password' ";
         $result = $comm->query($sql);
         if ($result->num_rows > 0 ) {
-            echo "in Password";
-            header('location:register.php?isPassword=1'); die;
+            $response['message'] =  "Password Already Exist";
+			echo json_encode($response); die; 
         } 
 
         $sql = "insert into blog_user2 (id,fname,lname,email,password) values (0,'$fname','$lname','$email','$password')";
         $result = $comm->query($sql);
-        //print_r($result);
-        if ($result) {
-            echo "Data Submit Success";
-            header('location:register.php');
-        } else {
-            echo "Data Submit Failed";
-        }
 
-    } else {
-        echo "Fomr Submit Failed";
-    }
+        if ($result) {
+            $response['message'] = "Data Submit Success";
+            $response['status'] = true;
+        } else {
+            $response['message'] =  "Data Submit Failed";
+        }
+    } 
+    echo json_encode($response);
 ?>

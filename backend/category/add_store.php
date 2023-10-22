@@ -1,6 +1,7 @@
 <?php
+    $response = array('status'=>false, 'message'=>'oops sometion went wrong', 'data'=>null);
     include('../../include/db.php');
-    if (isset($_POST['submit'])) {
+    if (isset($_POST)) {
         $brand          = $_POST['brand'];
         $description	= $_POST['description'];
 
@@ -8,12 +9,13 @@
 
         $result = $comm->query($sql);
         if ($result) {
-            echo "Dtat Save Success";
-            header('location:index.php');
-           } else {
-               echo "Dtat Failed Success";
-           }
+            $response['message'] = "Dtat Save Success";
+            $response['status'] = true;
         } else {
-            echo "From submit ";
+            $response['message'] = "Dtat Failed Success";
         }
+    } else {
+        $response['message'] = "Form Failed";
+    } 
+    echo json_encode($response);
 ?>

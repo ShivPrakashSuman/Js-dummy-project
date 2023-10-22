@@ -5,6 +5,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>       
 <style>
 	.zoom1:hover {
 		transform:scale(1.1);
@@ -40,11 +41,6 @@
 
 <body>
 	<?php
-		session_start();
-		if (isset($_SESSION['userData1'])) {
-			header('location:../auth/register.php');
-
-		}
 		include('topbar.php');
 	?>
 	<div class="container mt-5">
@@ -52,41 +48,12 @@
 			<h1 style="font-size:60px;">  Our Features </h1>
 		</div>
 	<!-- blog Data Fetch ---------------->
-	<div class="row ">
-		<?php
-			include('../../include/db.php');
-			$sql ="select*from blog_data2";
-			$result = $comm->query($sql);
-			if($result->num_rows > 0) {
-				while($rowData = $result->fetch_assoc () ) {		
-					// print_R($rowData);
-		  ?>
-			<div class="col-sm-4 pb-5">
-				<div class="shadow-lg bg-light mt-4 rounded-5 m-4 ">
-					<!-- <a href="javascript:void(0);" style="text-decoration: none;"> -->
-						<div class="p-4 overflow-hidden ">
-							<img src="../../uploads/<?php echo $rowData['image']; ?>" class="rounded-5 zoom1" width="100%" height="300px">
-						</div>
-						<div class="p-5  ">
-							<div class=" text-primary overflow ">
-								<h1><?php echo $rowData['title']; ?></h1>
-							</div>
-							<div class="text-muted mb-4 pt-1 overflow">
-								<?php echo $rowData['description']; ?>
-							</div>
-							<div class=" text-info pt-3 pb-3">
-								<a href="blog.php?id=<?php echo $rowData['id']; ?>" class="text-decoration-none"><h3> Read more..</h3> </a>
-							</div>
-						</div>
-					<!-- </a> -->
-				</div>
+		<div class="row">
+			<div id="blogList">
+
 			</div>
-			<?php } 
-				} else {
-					echo "Data Not Found";
-				}
-			?>
 		</div>
+
 		<div class="row mt-5 pt-5 mb-5">
 			<div class="col-sm-7 p-5">
 				<div class="mb-4 text-primary mt-5 " >
@@ -109,5 +76,65 @@
 	</div>
 	<hr>
 	<br>
+<script>
+	
+    function sessionApi(){
+        $.ajax({
+            type:'GET',
+            url:'../../include/sessionApi.php',
+            data:'',
+            success:function(data){
+                let resp = JSON.parse(data);
+                if(resp.status && resp.data.session){ 
+                    window.location.href = '../../backend/layout/dashboard.php';
+                }
+            }
+        });
+    }
+    sessionApi();
+
+	function getBlog(){
+		$('#blogList').empty();
+		$.ajax({
+			type:'GET',
+			url: 'bloglistApi.php',
+			data:'',
+			success: function(data){
+				let resp = JSON.parse(data);
+				if(resp.status){
+					let html = '';
+					if(resp.data.length > 0){
+						resp.data.forEach((val, key)=>{
+							html +=	'<div class="col-sm-4 pb-5">'+
+										'<div class="shadow-lg bg-light mt-4 rounded-5 m-4 ">'+
+											'<!-- <a href="javascript:void(0);" style="text-decoration: none;"> -->'+
+												'<div class="p-4 overflow-hidden ">'+
+													'<img src="../../uploads/'+ val.image +'" class="rounded-5 zoom1" width="100%" height="300px">'+
+												'</div>'+
+												'<div class="p-5">'+
+													'<div class=" text-primary overflow ">'+
+														'<h1>'+ val.title +'</h1>'+
+													'</div>'+
+													'<div class="text-muted mb-4 pt-1 overflow">'+
+														'<span>'+ val.description +'</span>'+
+													'</div>'+
+													'<div class=" text-info pt-3 pb-3">'+
+														'<a href="blog.php?id='+ val.id +'" class="text-decoration-none"><h3> Read more..</h3> </a>'+
+													'</div>'+
+												'</div>'+
+											'<!-- </a> -->'+
+										'</div>'+
+									'</div>';
+						})
+					}
+					$('#blogList').append(html);
+				} else{
+					alert(resp.message);
+				}
+			}
+		});
+	}
+	getBlog();
+</script>	
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
+    $response = array('status'=>false, 'message'=>'oops something went wrong', 'data'=>null);
     include('../../include/db.php');
-    if (isset($_POST['submit'])) {
+    if (isset($_POST)) {
         $name       = $_POST['name']; 
         $email      = $_POST['email']; 
         $salary     = $_POST['salary']; 
@@ -9,20 +10,21 @@
             $sql = "select * from add_user2 where email = '$email'";
             $result = $comm->query($sql);
             if($result->num_rows > 0 ) {
-                echo "in Email";
-                header('location:add.php?isEmail=1'); die;
+                $response['message'] = "Email Already Exist";
+                echo json_encode($response); die;
             }
         
         $sql = "insert into add_user2 (id,name,email,salary,city) values (0,'$name','$email','$salary','$city')";
         $result = $comm->query($sql);
 
         if ($result) {
-            echo"Data Submit Success";
-            header('location:index.php');
+            $response['message'] = "Data Submit Success";
+            $response['status'] = true;
         } else {
-            echo"Data Submit Failed";
+            $response['message'] = "Data Submit Failed";
         }
     } else {
-        echo "Form Failed";
+        $response['message'] = "Form Failed";
     }
+    echo json_encode($response);
 ?>

@@ -1,6 +1,9 @@
 <?php
+    
     include('../../include/db.php');
-    if (isset($_POST['submit'])) {
+    $response = array('status'=>false, 'message'=>'oops something went wrong?', 'data'=>null);
+
+    if (isset($_POST)) {
         $email      = $_POST['email'];
         $password   = $_POST['password'];
 
@@ -13,32 +16,34 @@
             $sql = "select *from blog_user2 where email = '$email'";
             $result = $comm->query($sql);
             if ($result->num_rows == 0) {
-                echo "in Email";
-                header('location:login.php?isEmail=1'); die;
+                $response['message'] = "Email Not found";
+                echo json_encode($response); die;
             } 
 
             $sql = "select *from blog_user2 where password = '$password'";
             $result = $comm->query($sql);
             if ($result->num_rows == 0) {
-                echo "in Password";
-                header('location:login.php?isPassword=1'); die;
+                $response['message'] = "Password Not found";
+                echo json_encode($response); die;
             } 
 
             $sql = "select*from `blog_user2` where email = '$email' && password = '$password' ";
             $result = $comm->query($sql);
             if ($result->num_rows > 0 ) {
-                echo "Login Success";
-                 $userdata = $result->fetch_assoc () ;
-
+              
+                 $userdata = $result->fetch_assoc() ;
+                 
                  session_start();
-                 $_SESSION['userData1'] = $userdata;
-
-                 header('location:../../backend/layout/dashboard.php');
+                    $_SESSION['userData1'] = $userdata;
+                    $response['message'] =  "Login SuccesFull";
+                    $response['status'] = true;
+                    $response['data']['session']= true;
+                    echo json_encode($response); 
+                    die;
 
             } else {
-            echo "Login Failed";
+                $response['message'] = "Login Failed";
             }
-    } else {
-        echo "Fomr Login Failed";
-    }
+    } 
+    echo json_encode($response);
 ?>

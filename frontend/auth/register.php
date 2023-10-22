@@ -51,19 +51,13 @@
 </style>   
 </head> 
 <body>
-    <?php
-        session_start();
-        if (isset($_SESSION['userData1'])) {
-                header('location:../../backend/layout/dashboard.php');
-        }
-    ?>
     <div class="center_box">
         <div class="mane">
             <div class="fom">
                 <div class=" p-5 text-center" style="margin: 25px;" >
                     <h1 class="fw-bold mb-5 pb-4" style="font-size: 35px;">Sign up now</h1>
 
-                    <form action="store.php" method="post" style="font-size:15px;" >
+                    <form action="store.php" id="registerForm" style="font-size:15px;" >
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <div class="form-outline">
@@ -78,12 +72,10 @@
                         </div>
 
                         <div class="form-outline mb-4 pb-4"> 
-                            <span class="text-danger"><?php echo (isset($_GET['isEmail']) && $_GET['isEmail'] == 1)?'Email Already Exist':'';?></span>
                             <input type="email" class="form-control inr" name="email" placeholder="Email address" required>
                         </div>
 
                         <div class="form-outline mb-4 pb-4">
-                            <span class="text-danger"><?php echo (isset($_GET['isPassword']) && $_GET['isPassword']==1 )?'PAssword Already Exist':''; ?> </span>
                             <input type="password" class="form-control inr" name="password" placeholder="Password" required>
                         </div>
 
@@ -110,5 +102,45 @@
             <img src="../../image/pic.jpg" alt="" width="auto" height="640px">
         </div>            
     </div>
+<script>
+
+    function sessionApi(){
+        $.ajax({
+            type:'GET',
+            url:'../../include/sessionApi.php',
+            data:'',
+            success:function(data){
+                let resp = JSON.parse(data);
+                if(resp.status && resp.data.session){ 
+                    window.location.href = '../../backend/layout/dashboard.php';
+                }
+            }
+        });
+    }
+    sessionApi();
+
+    $(document).ready(function(e){
+        $('#registerForm').submit(function(e){
+            e.preventDefault();
+
+            let form = $(this);
+            let actionUrl = form.attr('action');
+
+            $.ajax({
+                type:'POST',
+                url: actionUrl,
+                data: form.serialize(),
+                success: function(data){
+                    let resp = JSON.parse(data);
+                    if(resp.status){
+                        alert(resp.message);
+                    } else {
+                        alert(resp.message);
+                    }
+                }
+            });
+        });
+    });
+</script>    
 </body>
 </html>    

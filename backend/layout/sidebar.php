@@ -3,6 +3,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         .mane{
             background-color: #4582ff; 
@@ -26,7 +27,7 @@
             list-style-type: none;
         }
         .fa {
-            font-size:20px;
+            font-size:22px;
             margin: 10px;
         }
         .drop {
@@ -43,21 +44,16 @@
     </head>
     <body>
         <?php
-           if (!isset($_SESSION['userData1'])) {
-            header('location:../../frontend/auth/register.php');
-        }
-            $rowData = $_SESSION['userData1'];
-            $baseURL = 'http://localhost/blog';
-
+            $baseURL = 'http://localhost/ajax_js/JS_blog';
         ?>
         <div class="mane ">
-            <div class="pt-4 pb-4 text-center">
-                <h1> <?php echo $rowData['fname']; ?> </h1>
+            <div class=" text-center">
+                <i class="fa fa-apple" style="font-size: 58px;"></i>
             </div>
             <hr>
             <!-- DASHBOARD -->
             <div class=" row bar mt-4">
-                <a href="<?php echo $baseURL ; ?>/backend/layout/dashboard.php" class="box " style="text-decoration: none;" > 
+                <a href="<?php echo $baseURL; ?>/backend/layout/dashboard.php" class="box " style="text-decoration: none;" > 
                     <i class="fa fa-book"></i>
                     <span>Dashboard </span> 
                     <i class="drop fa fa-angle-right"></i>
@@ -136,7 +132,7 @@
                         </a> 
                     </li>
                     <li class="row" > 
-                        <a href="../other/table.php" class="box" style="text-decoration: none;" >
+                        <a href="../other/table.php" class="box active" style="text-decoration: none;" >
                             <i class="fa  fa-table"></i>
                             <span> Tables </span> 
                             <i class=" drop fa fa-angle-right"></i>
@@ -153,6 +149,6 @@
                     <i class="drop fa fa-angle-right"></i>
                 </a>
             </div>
-        </div>    
+        </div> 
     </body>        
 </html>

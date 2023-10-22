@@ -3,6 +3,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">                         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         .mane_box{
             background-color:red;
@@ -30,34 +31,7 @@
         }
     </style>
 <body>
-<?php
-    session_start();
-    if (!isset($_SESSION['userData1'])) {
-		header('location:../../frontend/auth/register.php');
-	}
-    $rowData = $_SESSION['userData1'];
-    include('../../include/db.php');
-
-    //user count query -----
-    $sql1 = "select sum(salary) as UserSum from add_user2";
-    $result1 = $comm->query($sql1);
-    $userSum = $result1->fetch_assoc ();
-
-    //blog count query ------
-    $sql2 = "select count(id) as BlogCount from blog_data2";
-    $result2 = $comm->query($sql2);
-    $blogCount = $result2->fetch_assoc ();
-
-    // Mane login user count query --- 
-    $sql3 = "select count(id) as ManeCount from blog_user2";
-    $result3 = $comm->query($sql3);
-    $maneCount = $result3->fetch_assoc ();
-
-    //age users ----
-    $sql4 = "select avg(id) as SalaryAvg from add_user2";
-    $result4 = $comm->query($sql4);
-    $salaryAvg = $result4->fetch_assoc ();
-?>    
+   
     <div style="float:left;">
          <?php include('sidebar.php'); ?>
     </div>
@@ -66,16 +40,34 @@
             <div class=" p-4 mb-4 shadow-lg bg-light nave">
                 <div class="row">
                     <div class="col-sm-6">
-                        <div style=" width:50%;  ">
-                            <input type="text" class="form-control p-2 m-2" style="font-size: 20px;"  placeholder="Search....">
-                            <a href="#" class="icon1" ><i class=" btn-primary icon1 fa fa-search fa-sm"></i> </a>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control p-2 m-2" style="font-size: 20px;"  placeholder="Search....">
+                            </div>
+                            <div class="col-sm-6 p-0">
+                                <a href="#"><i style="margin: 4px 0px;"class=" btn-primary icon1 fa fa-search fa-sm"></i> </a>
+                            </div>
                         </div> 
                     </div>
                     <div class="col-sm-6">
-                        <div style="float:right; margin-right:20px;" >
-                            <i class="fa fa-bell m-4  text-primary"></i>
-                            <i class="fa fa-envelope m-4  text-primary"></i>
-                        </div>
+                        <div class="row">
+                            <div class="col-sm-10 text-right pt-3" >
+                                <div class='row'>
+                                    <div class='col-sm-10 p-0'>
+                                        <h1 id='fname' class="float-right" ></h1>
+                                    </div>
+                                    <div class='col-sm-2'>
+                                        <h1 id='lname'></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div style="margin-right:10px;" >
+                                    <i class="fa fa-bell m-4  text-primary"></i>
+                                    <i class="fa fa-envelope m-4  text-primary"></i>        
+                                </div>
+                            </div>
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -100,7 +92,7 @@
                                         <h3> User (Total Salary) </h3>
                                     </div>
                                     <div class="h3">
-                                        $<?php echo $userSum['UserSum']; ?>
+                                        $<span id="TotalSalary"> </span>
                                     </div>
                                 </div>
                                 <div class="col-auto text-primary" >
@@ -120,7 +112,7 @@
                                         <h3> blogs (count) </h3>
                                     </div>
                                     <div class="h3">
-                                        <?php echo $blogCount['BlogCount']; ?>
+                                        <span id="blogCount"> </span>
                                     </div>
                                 </div>
                                 <div class="col-auto" >
@@ -140,7 +132,7 @@
                                         <h3> Table (id_count) </h3>
                                     </div>
                                     <div class="h3">
-                                        <?php echo $maneCount['ManeCount']; ?>
+                                        <span id="maneCount"> </span>
                                     </div>
                                 </div>
                                 <div class="col-auto" >
@@ -160,7 +152,7 @@
                                         <h3> charts (Salary Avg) </h3>
                                     </div>
                                     <div class="h3">
-                                        <?php echo $salaryAvg['SalaryAvg']; ?> %
+                                        <span id="salaryAvg"></span> %
                                     </div>
                                 </div>
                                 <div class="col-auto" >
@@ -257,6 +249,61 @@
                 </div>
             </div>
         </div>   
-    </div>          
+    </div> 
+ 
+<script>
+
+    // function sessionApi(){
+
+    // $.ajax({
+    //     type:'GET',
+    //     url:'../../include/sessionApi.php',
+    //     data:'',
+    //     success:function(data){
+    //         let resp = JSON.parse(data);
+    //         if(resp.status && resp.data.session){ 
+
+    //         } else {
+    //             window.location.assign('../../frontend/auth/register.php');
+    //         }
+    //     }
+    // });
+    // }
+    // sessionApi(); 
+
+    function authCheck(){ 
+	    let x = localStorage.getItem('auth'); 
+		console.log('auth',x);
+		if(x == 'false'){
+	    	console.log('redirect');
+			window.location.assign('../../frontend/auth/register.php');
+		}
+    }
+    authCheck(); 
+
+    
+    function dashboardApi(){
+        $.ajax({
+            type:'GET',
+            url:'dashboardApi.php',
+            data:'',
+            success: function(data){
+                let resp = JSON.parse(data);
+                let comm = resp.data;
+                if(resp.status){
+                    document.getElementById('fname').innerHTML = comm.RowData.fname;
+                    document.getElementById('lname').innerHTML = comm.RowData.lname;
+                    document.getElementById('TotalSalary').innerHTML = comm.totalSalary.TotalSalary;
+                    document.getElementById('blogCount').innerHTML = comm.blogCount.BlogCount;
+                    document.getElementById('maneCount').innerHTML = comm.maneCount.ManeCount;
+                    document.getElementById('salaryAvg').innerHTML = comm.salaryAvg.SalaryAvg;
+                } else {
+                    alert(resp.message);
+                }
+            }
+        });
+    }
+    dashboardApi();
+</script>             
 </body>    
 </html>

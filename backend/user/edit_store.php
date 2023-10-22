@@ -1,23 +1,24 @@
 <?php
+    $response = array('status'=>false, 'message'=>'oops something rong wromg', 'data'=>null);
     include('../../include/db.php');
-    if (isset($_POST['submit'])) {
+    if (isset($_POST)) {
         $id         = $_POST['id'];
         $name       = $_POST['name']; 
         $email      = $_POST['email']; 
         $salary     = $_POST['salary']; 
         $city       = $_POST['city']; 
-
         
         $sql = "update add_user2 set `name`='$name', `email`='$email', `salary`='$salary', `city`='$city' where id = '$id' ";
         $result = $comm->query($sql);
 
         if ($result) {
-            echo"Data Update Success";
-            header('location:index.php');
+            $response['message'] = "Data Update Success";
+            $response['status'] = true; 
         } else {
-            echo"Data Update Failed";
+            $response['message'] = "Data Update Failed";
         }
     } else {
-        echo "Form Failed";
+        $response['message'] = "Form Failed";
     }
+    echo json_encode($response);
 ?>

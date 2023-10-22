@@ -1,6 +1,8 @@
 <?php
+    $response = array('status'=>false, 'message'=>'oops sometion went wrong', 'data'=>null);
+
     include('../../include/db.php');
-    if (isset($_POST['submit'])) {
+    if (isset($_POST)) {
         $title          = $_POST['title'];
         $description	= $_POST['description'];
         $image          = time().$_FILES['file']["name"];
@@ -14,12 +16,13 @@
             $result = $comm->query($sql);
     
             if($result) {
-                echo "Dtat Save Success";
-             header('location:index.php');
+                $response['message'] = "Data Save Success";
+                $response['status'] = true;
             } else {
-                echo "Dtat Failed Success";
+                $response['message'] =  "Data Failed Success";
             }
     }  else {
-        echo "Form Failed";
+        $response['message'] = "Form Failed";
     } 
+    echo json_encode($response);
 ?>

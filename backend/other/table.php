@@ -2,7 +2,6 @@
 <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .mane_box{
             background-color:red;
@@ -32,15 +31,19 @@
             text-decoration: none;
             background-color: transparent;
         }
+        .reset {
+            border-radius: 6px;
+            padding: 5px;
+            font-size: 20px;
+            background: #d7e9ff;
+            text-decoration: none;
+        }
+        .reset:hover {
+            background: #d7e9ff;
+            text-decoration: none;
+        }
     </style>
-<body>
-<?php
-    session_start();
-    if (!isset($_SESSION['userData1'])) {
-		header('location:../../frontend/auth/register.php');
-	}
-    $rowData = $_SESSION['userData1'];
-?>    
+<body>   
     <div style="float:left;">
          <?php include('../layout/sidebar.php'); ?>
     </div>
@@ -49,15 +52,36 @@
             <div class=" p-4 mb-4 shadow-lg bg-light nave">
                 <div class="row">
                     <div class="col-sm-6">
-                        <div style=" width:50%;  ">
-                            <input type="text" class="form-control p-2 m-2" style="font-size: 20px;"  placeholder="Search....">
-                            <a href="#" class="icon1" ><i class=" btn-primary icon1 fa fa-search fa-sm"></i> </a>
-                        </div> 
+                        <div class="row">   
+                            <form action="" method="get">
+                                <div class="col-sm-6" style="padding-right: 8px;">  
+                                    <input type="search"name="search" class="form-control p-2 m-2" style="font-size: 20px;" id="val_search" placeholder="Search...." >
+                                </div>
+                                <div class="col-sm-6 p-0">
+                                    <button type="button" class="btn-primary" onclick="searchData();" style="border-radius: 5px; margin: 4px 0px;"><i style="margin: 4px 0px;" class="fa fa-search "></i> </button>
+                                    <a href="http://localhost/ajax_js/JS_blog/backend/other/table.php" class="reset" >Reset</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                     <div class="col-sm-6">
-                        <div style="float:right; margin-right:20px;" >
-                            <i class="fa fa-bell m-4  text-primary"></i>
-                            <i class="fa fa-envelope m-4  text-primary"></i>
+                        <div class="row">
+                            <div class="col-sm-10 text-right pt-3" >
+                                <div class='row'>
+                                    <div class='col-sm-10 p-0'>
+                                        <h1 id='fname' class="float-right" ></h1>
+                                    </div>
+                                    <div class='col-sm-2'>
+                                        <h1 id='lname'></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div style="margin-right:10px;" >
+                                    <i class="fa fa-bell m-4  text-primary"></i>
+                                    <i class="fa fa-envelope m-4  text-primary"></i>        
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,45 +113,121 @@
                         </div>
                         <!--  TABLE   -->
                         <div class="row p-4">
-                            <table class="table table-striped table-hover">
-                                <?php
-                                    include('../../include/db.php');
-                                    $sql = "select*from blog_user2";
-                                    $result = $comm->query($sql);
-                                ?>
-                                <tr>
-                                    <th> id </th>
-                                    <th> First Name </th>
-                                    <th> Last Name </th>
-                                    <th> Email </th>
-                                    <th> created </th>
-                                </tr>
-                                    <?php
-                                        if($result->num_rows > 0) {
-                                        while($rowData = $result->fetch_assoc () ) {
-                                        $d = strtotime($rowData['created']);    
-                                    ?>
-                                <tr>
-                                    <td> <?php echo $rowData['id']; ?> </td>
-                                    <td> <?php echo $rowData['fname']; ?> </td>
-                                    <td> <?php echo $rowData['lname']; ?> </td>
-                                    <td> <?php echo $rowData['email']; ?> </td>
-                                    <td> <?php echo date("d-M-Y  / h:i:sa", $d) ?> </td>
-                                </tr>
-                                    <?php
-                                            }
-                                        } else {
-                                    ?>
-                                <tr>
-                                    <td colspan="5" align="center"> No Data Found </td>
-                                </tr>
-                                  <?php } ?>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th> id </th>
+                                        <th> First Name </th>
+                                        <th> Last Name </th>
+                                        <th> Email </th>
+                                        <th> created </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listData">
+
+                                </tbody>                                   
                             </table>
-                        </div>    
+                        </div>
+                        <!-- Pagination  --->     
+                        <div class="row" style="background-color:#ededed; margin: -1px -1px; border-bottom: 1px solid #297dc4;">
+                            <div style="align-items: center; display: flex; justify-content: center;">
+                                <ul class="pagination" id="pagination" style="font-size: 13px; margin: 10px;">
+
+                                </ul>
+                            </div>
+                        </div>     
                     </div>
                 </div>
             </div>
         </div>   
-    </div>          
+    </div>
+<script>
+    
+    function authCheck(){ 
+	    let x = localStorage.getItem('auth'); 
+		console.log('auth',x);
+		if(x == 'false'){
+	    	console.log('redirect');
+			window.location.assign('../../frontend/auth/register.php');
+		}
+    }
+    authCheck(); 
+
+  var loginUser ='';
+    function dashboardApi(){
+        $.ajax({
+            type:'GET',
+            url:'../layout/dashboardApi.php',
+            data:'',
+            success: function(data){
+                let resp = JSON.parse(data);
+                let comm = resp.data;
+                if(resp.status){
+                    document.getElementById('fname').innerHTML = comm.RowData.fname;
+                    document.getElementById('lname').innerHTML = comm.RowData.lname;
+                    loginUser = comm.RowData;
+                } else {
+                    alert(resp.message);
+                }
+            }
+        });
+    }
+    dashboardApi();
+
+    function getRecord(page=1, search=''){
+        $('#listData').empty();
+        $('#pagination').empty();
+        $.ajax({
+            type:'GET',
+            url:'tableapi.php?search='+search+'&page='+page,
+            data:'',
+            success : function(data){
+                let resp = JSON.parse(data);
+                let total_page = resp.data.total_page;
+                let current_page = resp.data.current_page;
+                if(resp.status){
+                    let html ='';
+                    let pagination = '';
+                    if(resp.data.data.length > 0){
+                        resp.data.data.forEach((val, key)=>{
+                            if(val.id == loginUser.id){
+                                html += '<tr style="background:#87fb87">';
+                            } else {
+                                html += '<tr>';
+                            }
+                                html += '<td>'+ val.id +'</td>'+
+                                        '<td>'+ val.fname +'</td>'+
+                                        '<td>'+ val.lname +'</td>'+
+                                        '<td>'+ val.email +'</td>'+
+                                        '<td>'+ val.created +'</td>'+
+                                    '</tr>';
+                            
+                        })
+                        // pagination start -------
+                            pagination += '<li><a href="javascript:void(0);" onclick="getRecord('+ 1 +')">frist</a></li>';
+                                for(let i = 0; i < total_page; i++){
+                                    if((i+1) == current_page){
+                                        pagination += '<li class="active"><a href="javascript:void(0);" onclick="getRecord('+( i+1 )+');">'+ (i+1) +'</a></li>';
+                                    } else {
+                                        pagination += '<li><a href="javascript:void(0);" onclick="getRecord('+( i+1 )+');">'+ (i+1) +'</a></li>';
+                                    }
+                                }
+                            pagination += '<li><a href="javascript:void(0);" onclick="getRecord('+ total_page +')">last</a></li>';    
+                      // pagination End ------------  
+                    }
+                    $('#pagination').append(pagination);
+                    $('#listData').append(html);
+                } else {
+                    alert(resp.message);
+                }
+            }
+        });
+    }
+    getRecord();
+    function searchData(){
+        let search = document.getElementById('val_search').value;
+        getRecord(1, search);
+    }
+</script>               
 </body>    
 </html>

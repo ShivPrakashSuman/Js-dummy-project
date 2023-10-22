@@ -3,6 +3,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         .mane_box{
             background-color:red;
@@ -34,10 +35,8 @@
         }
         .reset {
             border-radius: 6px;
-            position: absolute;
-            margin: -44px 419px;
-            padding: 10px;
-            font-size: 16px;
+            padding: 5px;
+            font-size: 20px;
             background: #d7e9ff;
             text-decoration: none;
         }
@@ -46,25 +45,7 @@
             text-decoration: none;
         }
     </style>
-<body>
-<?php
-    session_start();
-    if (!isset($_SESSION['userData1'])) {
-		header('location:../../frontend/auth/register.php');
-	}
-    $rowData = $_SESSION['userData1'];
-    include('../../include/db.php');
-
-     //user count query -----
-     $sql1 = "select count(id) as UserCount from add_user2";
-     $result1 = $comm->query($sql1);
-     $userCount = $result1->fetch_assoc ();
-
-     //user Sum query -----
-     $sql2 = "select sum(salary) as UserSum from add_user2";
-     $result2 = $comm->query($sql2);
-     $userSum = $result2->fetch_assoc ();
-?>    
+<body>   
     <div style="float:left;">
          <?php include('../layout/sidebar.php'); ?>
     </div>
@@ -73,30 +54,38 @@
             <div class=" p-4 mb-4 shadow-lg bg-light nave">
                 <div class="row">
                     <div class="col-sm-6">
-                        <div style=" width:50%;  ">
-                            <?php 
-                                if(isset($_GET['search'])) { 
-                            ?>
-                                <form action="" method="GET">
-                                    <input type="search"name="search" class="form-control p-2 m-2" style="font-size: 20px;"  placeholder="Search...." value="<?php echo $_GET['search']; ?>">
-                                    <button type="submit" class="btn-primary icon1" ><i class="fa fa-search "></i> </button>
-                                    <a href="http://localhost/blog/backend/user/" class="reset" >Reset</a>
-                                </form>
-                            <?php 
-                                } else {
-                            ?>
-                                <form action="" method="GET">
-                                    <input type="search"name="search" class="form-control p-2 m-2" style="font-size: 20px;"  placeholder="Search....">
-                                    <button type="submit" class="btn-primary icon1" ><i class="fa fa-search "></i> </button>
-                                    <a href="http://localhost/blog/backend/user/" class="reset" >Reset</a>
-                                </form>
-                            <?php } ?>    
-                        </div> 
+
+                        <div class="row">   
+                            <form action="" method="get">
+                                <div class="col-sm-6" style="padding-right: 8px;">  
+                                    <input type="search"name="search" class="form-control p-2 m-2" style="font-size: 20px;" id="val_search" placeholder="Search...." >
+                                </div>
+                                <div class="col-sm-6 p-0">
+                                    <button type="button" class="btn-primary" onclick="searchData();" style="border-radius: 5px; margin: 4px 0px;"><i style="margin: 4px 0px;" class="fa fa-search "></i> </button>
+                                    <a href="http://localhost/ajax_js/JS_blog/backend/user/" class="reset" >Reset</a>
+                                </div>
+                            </form>
+                        </div>
+                        
                     </div>
                     <div class="col-sm-6">
-                        <div style="float:right; margin-right:20px;" >
-                            <i class="fa fa-bell m-4  text-primary"></i>
-                            <i class="fa fa-envelope m-4  text-primary"></i>
+                        <div class="row">
+                            <div class="col-sm-10 text-right pt-3" >
+                                <div class='row'>
+                                    <div class='col-sm-10 p-0'>
+                                        <h1 id='fname' class="float-right" ></h1>
+                                    </div>
+                                    <div class='col-sm-2'>
+                                        <h1 id='lname'></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div style="margin-right:10px;" >
+                                    <i class="fa fa-bell m-4  text-primary"></i>
+                                    <i class="fa fa-envelope m-4  text-primary"></i>        
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,51 +118,30 @@
                         <!--  TABLE   -->
                         <div class="row p-4">
                             <table class="table table-striped table-hover">
-                                <?php
-                                    include('../../include/db.php');
-                                    $sql = "select*from add_user2";
-                                        if(isset($_GET['search'])){
-                                            $search = $_GET['search'];
-                                            $sql = "SELECT * FROM add_user2 WHERE name LIKE '%$search%' or email LIKE '%$search%' or salary LIKE '%$search%' or city LIKE '%$search%' ";
-                                        }
-                                    $result = $comm->query($sql);
-                                ?>
-                                <tr>
-                                    <th> id </th>
-                                    <th> Name </th>
-                                    <th> Email </th>
-                                    <th> Salary </th>
-                                    <th> City </th>
-                                    <th> created </th>
-                                    <th> Action </th>
-                                </tr>
-                                    <?php
-                                        if($result->num_rows > 0) {
-                                        while($rowData = $result->fetch_assoc () ) {
-                                        $d = strtotime($rowData['created']);    
-                                    ?>
-                                <tr>
-                                    <td> <?php echo $rowData['id']; ?> </td>
-                                    <td> <?php echo $rowData['name']; ?> </td>
-                                    <td> <?php echo $rowData['email']; ?> </td>
-                                    <td> <?php echo $rowData['salary']; ?> </td>
-                                    <td> <?php echo $rowData['city']; ?> </td>
-                                    <td> <?php echo date("d-M-Y  / h:i:sa", $d) ?> </td>
-                                    <td>
-                                        <a href="edit.php?id=<?php echo $rowData['id']; ?>" class="icon2" style=" background-color: transparent;"><i class="fa fa-pencil"></i> </a>
-				                        <a href="delete.php?id=<?php echo $rowData['id']; ?>" class="icon2 " style="color:red; background-color: transparent;"> <i class="fa fa-trash"></i> </a>   
-                                    </td>
-                                </tr>
-                                    <?php
-                                            }
-                                        } else {
-                                    ?>
-                                <tr>
-                                    <td colspan="7" align="center"> No Data Found </td>
-                                </tr>
-                                  <?php } ?>
+                                <thead>
+                                    <tr>
+                                        <th> id </th>
+                                        <th> Name </th>
+                                        <th> Email </th>
+                                        <th> Salary </th>
+                                        <th> City </th>
+                                        <th> created </th>
+                                        <th> Action </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userList"> 
+
+                                </tbody>
                             </table>
-                        </div>    
+                        </div>
+                    <!-- Pagination  --->     
+                        <div class="row" style="background-color:#ededed; margin: -1px -1px; border-bottom: 1px solid #297dc4;">
+                            <div style="align-items: center; display: flex; justify-content: center;">
+                                <ul class="pagination" id="pagination" style="font-size: 13px; margin: 10px;">
+
+                                </ul>
+                            </div>
+                        </div> 
                     </div>
                 </div>
                 <div class="col-sm-4">
@@ -185,7 +153,7 @@
                                 </div>   
                             </div>
                             <div class="col-auto mt-2 text-primary ">
-                                <i class="fa fa-user-plus"></i>
+                                <a href="add.php" style="background-color: transparent;"><i class="fa fa-user-plus"></i></a>
                             </div>  
                         </div>
                         <div class="row p-4 m-4">
@@ -198,11 +166,11 @@
                                                     <h3> User ( Tptal Salary ) </h3>
                                                 </div>
                                                 <div class="h3">
-                                                    $<?php echo $userSum['UserSum']; ?>
+                                                    $<span id="TotalSalary"></span>
                                                 </div>
                                             </div>
                                             <div class="col-auto text-primary" style="font-size:25px;" >
-                                                <i style="font-size:30px;"class="fa fa-user"></i><?php echo $userCount['UserCount']; ?> 
+                                                <i style="font-size:30px;"class="fa fa-user"></i><span id="userCount"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -211,8 +179,115 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>           
         </div>   
-    </div>          
+    </div> 
+<script>
+    
+    function authCheck(){ 
+	    let x = localStorage.getItem('auth'); 
+		console.log('auth',x);
+		if(x == 'false'){
+	    	console.log('redirect');
+			window.location.assign('../../frontend/auth/register.php');
+		}
+    }
+    authCheck(); 
+
+    function dashboardApi(){
+        $.ajax({
+            type:'GET',
+            url:'../layout/dashboardApi.php',
+            data:'',
+            success: function(data){
+                let resp = JSON.parse(data);
+                let comm = resp.data;
+                if(resp.status){
+                    document.getElementById('fname').innerHTML = comm.RowData.fname;
+                    document.getElementById('lname').innerHTML = comm.RowData.lname;
+                    document.getElementById('TotalSalary').innerHTML = comm.totalSalary.TotalSalary;
+                    document.getElementById('userCount').innerHTML = comm.userCount.UserCount;
+                } else {
+                    alert(resp.message);
+                }
+            }
+        });
+    }
+    dashboardApi();
+
+    function deleteRow(id){
+        $.ajax({
+            type:'GET',
+            url:'delete.php?id='+id,
+            data:'',
+            success: function(data){
+                let resp = JSON.parse(data);
+                if(resp.status){
+                    //alert(resp.message);
+                    window.location.reload();
+                } else {
+                    alert(resp.message);
+                }
+            }
+        });
+    }
+
+    function getList(page=1, search=''){
+        $('#userList').empty( );
+        $('#pagination').empty( );
+        $.ajax({
+            type:'GET',
+            url:'listApi.php?search='+search+'&page='+page,
+            data:'',
+            success: function(data){
+                let resp = JSON.parse(data);
+                if(resp.status){
+                    let html = '';
+                    let pagination = '';
+                    let total_page = resp.data.total_page;
+                    let current_page = resp.data.current_page;
+
+                    if(resp.data.data.length > 0){
+                        resp.data.data.forEach((val, key)=>{
+                            html += '<tr>'+
+                                        '<td>'+ val.id +'</td>'+
+                                        '<td>'+ val.name +'</td>'+
+                                        '<td>'+ val.email +'</td>'+
+                                        '<td>'+ val.salary +'</td>'+
+                                        '<td>'+ val.city +'</td>'+
+                                        '<td>'+ val.created +'</td>'+
+                                        '<td>'+
+                                            '<a href="edit.php?id='+ val.id +'" class="icon2" style=" background-color: transparent;"><i class="fa fa-pencil"></i> </a>'+
+                                            '<a href="javascript:void(0);" onclick="deleteRow('+ val.id +')" class="icon2 " style="color:red; background-color: transparent;"> <i class="fa fa-trash"></i> </a>'+   
+                                        '</td>'+
+                                    '</tr>';
+                        });
+                        // pagination start - ------------
+                            pagination += '<li><a href="javascript:void(0);" onclick="getList('+ 1 +')">frist</a></li>';
+                                for(let i = 0; i < total_page; i++){
+                                    if((i+1) == current_page){ 
+                                        pagination += '<li class="active"><a  href="javascript:void(0);" onclick="getList('+ (i+1) +')">'+ (i+1) +'</a></li>';
+                                    } else {
+                                        pagination += '<li><a  href="javascript:void(0);" onclick="getList('+ (i+1) +')">'+ (i+1) +'</a></li>';
+                                    }
+                                } 
+                            pagination += '<li><a href="javascript:void(0);" onclick="getList('+ total_page +')">last</a></li>';
+                        $("#pagination").append(pagination);
+                        // pagination End ------------                        
+                    }
+                    $('#userList').append(html);
+                } else {
+                    alert(resp.message);
+                }
+            }
+        });
+    }
+    getList();
+
+    function searchData(){
+        let search = document.getElementById('val_search').value;
+        getList(1, search);
+    }
+</script>         
 </body>    
 </html>

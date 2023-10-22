@@ -1,6 +1,8 @@
 <?php
+    $response = array('status'=>false, 'message'=>'oops something went wrong', 'data'=>null);
+
     include('../../include/db.php');
-    if (isset($_POST['submit'])) {
+    if (isset($_POST)) {
         $id             = $_POST['id'];
         $brand          = $_POST['brand'];
         $description    = $_POST['description'];
@@ -10,12 +12,13 @@
         $result = $comm->query($sql);
 
         if($result) {
-            echo "Success";
-            header('location:index.php');
+            $response['message'] =  "Update SuccessFull";
+            $response['status'] =  true;
         } else {
-            echo "Failed";
+            $response['message'] =  "Failed";
         }
     } else {
-        echo "From Data Update Failed ";
+        $response['message'] =  "From Data Update Failed ";
     }
+    echo json_encode($response);  
 ?>
